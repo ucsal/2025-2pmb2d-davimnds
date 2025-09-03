@@ -1,5 +1,4 @@
-package br.com.mariojp.solid.dip;
-
+import br.com.mariojp.solid.dip.*;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -8,7 +7,12 @@ public class EmailNotifierTest {
     void dry_run_should_not_touch_smtp() {
         System.setProperty("DRY_RUN", "true");
         System.clearProperty("SMTP_AVAILABLE");
-        var notifier = new EmailNotifier();
+
+        // Crie e injete o DryRunEmailService para o teste.
+        var service = new DryRunEmailService();
+        var notifier = new EmailNotifier(service);
+
+        // O teste passa porque o notificador usará a implementação DryRun.
         assertDoesNotThrow(() -> notifier.welcome(new User("Ana", "ana@example.com")),
                 "Após refatoração (DIP), DRY_RUN deve evitar SMTP real");
     }
